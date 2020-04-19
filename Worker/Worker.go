@@ -13,6 +13,7 @@ type Worker struct {
 	mediaMetadataGrpcClient *grpc_client.MediaMetadataClient
 	mediaChunksGrpcClient *grpc_client.MediaChunksClient
 	timeShiftGrpcClient *grpc_client.TimeShiftClient
+	sequenceGrpcClient *grpc_client.SequenceServiceClient
 }
 
 func (worker *Worker) Work()  {
@@ -68,7 +69,20 @@ func (worker *Worker) Work()  {
 
 			newMediaRsp.Status = 3
 			// TODO for next version download new sequence chunks.. join then and create new media for download on aws...
+
+
 			_, err = worker.mediaMetadataGrpcClient.UpdateMediaMetadata(newMediaRsp)
+			if err != nil {
+				log.Println(err)
+			}
+
+			sequenceData, err := worker.sequenceGrpcClient.GetSequenceMedia(sequenceTimeShiftData.GetSequenceId())
+
+			if err != nil {
+				log.Println(err)
+			}
+			_, err = worker.sequenceGrpcClient.UpdateSequence(sequenceData)
+
 			if err != nil {
 				log.Println(err)
 			}
@@ -90,6 +104,7 @@ func InitWorker() *Worker  {
 		mediaMetadataGrpcClient: 	grpc_client.InitMediaMetadataGrpcClient(),
 		mediaChunksGrpcClient: 		grpc_client.InitChunkMetadataClient(),
 		timeShiftGrpcClient: 		grpc_client.InitTimeShiftClient(),
+		sequenceGrpcClient: 		grpc_client.InitSequenceServiceMetadata(),
 	}
 
 }

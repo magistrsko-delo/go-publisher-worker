@@ -1,0 +1,64 @@
+syntax = "proto3";
+option java_package = "grpc";
+
+service SequenceMetadata {
+  rpc getProjectSequences(GetProjectSequencesRequest) returns (ProjectSequencesResponse) {};
+  rpc getSequenceMedia (SequenceIdRequest) returns (SequenceMediaResponse) {};
+  rpc createSequence (NewSequenceRequest) returns (SequenceMediaResponse) {};
+  rpc updateSequence (UpdateSequenceRequest) returns (SequenceMediaResponse) {};
+  rpc deleteSequence (SequenceIdRequest) returns (StatusResponse) {};
+  rpc addMediaToSequence (SequenceMediaRequest) returns (StatusResponse){}
+  rpc deleteMediaFromSequence (SequenceMediaRequest) returns (StatusResponse) {}
+}
+
+message GetProjectSequencesRequest {
+  int32 projectId = 1;
+}
+
+message SequenceIdRequest {
+  int32 sequenceId = 1;
+}
+
+message SequenceMediaRequest {
+  int32 sequenceId = 1;
+  int32  mediaId = 2;
+}
+
+message NewSequenceRequest {
+  string name = 1;
+  int32 projectId = 2;
+  string thumbnail = 3;
+}
+
+message UpdateSequenceRequest {
+  int32 sequenceId = 1;
+  string name = 2;
+  int32 status = 3;
+  int32 projectId = 4;
+  string thumbnail = 5;
+}
+
+message ProjectSequencesResponse {
+  repeated Sequence data = 1;
+}
+
+message SequenceMediaResponse {
+  Sequence sequence = 1;
+  repeated int32 mediaIds = 2;
+}
+
+message StatusResponse {
+  int32 status = 1;
+  string message = 2;
+  bool data = 3;
+}
+
+message Sequence {
+  int32 sequenceId = 1;
+  string name = 2;
+  int32 projectId = 3;
+  string thumbnail = 4;
+  int32 status = 5;
+  int64 createdAt = 6;
+  int64 updatedAt = 7;
+}
