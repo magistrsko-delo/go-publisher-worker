@@ -22,6 +22,8 @@ type Env struct {
 	TimeShiftGrpcPort string
 	SequenceServiceServer string
 	SequenceServicePort string
+	AwsStorageGrpcServer string
+	AwsStorageGrpcPort string
 }
 
 func InitEnv()  {
@@ -40,6 +42,8 @@ func InitEnv()  {
 		TimeShiftGrpcPort:			os.Getenv("TIMESHIFT_GRPC_PORT"),
 		SequenceServiceServer:		os.Getenv("SEQUENCE_SERVICE_GRPC_SERVER"),
 		SequenceServicePort:		os.Getenv("SEQUENCE_SERVICE_GRPC_PORT"),
+		AwsStorageGrpcServer: 		os.Getenv("AWS_STORAGE_GRPC_SERVER"),
+		AwsStorageGrpcPort:			os.Getenv("AWS_STORAGE_GRPC_PORT"),
 	}
 	fmt.Println(envStruct)
 }
