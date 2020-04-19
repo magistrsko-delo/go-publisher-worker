@@ -1,0 +1,66 @@
+syntax = "proto3";
+option java_package = "grpc";
+import "google/protobuf/empty.proto";
+
+service MediaMetadata {
+  rpc newMediaChunk(NewMediaChunkRequest) returns (MediaChunkInfoResponseRepeated) {};
+  rpc linkMediaWithChunk(LinkMediaWithChunkRequest) returns (LinkMediaChunkResponse) {};
+  rpc getMediaChunksResolution(MediaChunkResolutionRequest) returns (MediaChunkInfoResponseRepeated) {};
+  rpc getAvailableResolutions(google.protobuf.Empty) returns (ResolutionResponse) {};
+  rpc getMediaChunkInfo(GetMediaChunkInfoRequest) returns (ChunkInfo) {};
+}
+
+message MediaChunkInfoResponseRepeated {
+  repeated MediaChunkInfoResponse data = 1;
+}
+
+message MediaChunkInfoResponse {
+  int32 mediaId = 1;
+  string resolution = 2;
+  int32 position = 3;
+  int32 id = 4;
+  ChunkInfo chunk = 5;
+}
+
+message ResolutionResponse {
+  repeated string resolutions = 1;
+}
+
+message LinkMediaChunkResponse {
+  int32 status = 1;
+  string message = 2;
+  bool data = 3;
+}
+
+message ChunkInfo {
+  string awsBucketName = 1;
+  string awsStorageName = 2;
+  double length = 3;
+  int32 chunkId = 4;
+  int64 createdAt = 5;
+}
+
+message NewMediaChunkRequest {
+  string awsBucketName = 1;
+  string awsStorageName = 2;
+  double length = 3;
+  int32 mediaId = 4;
+  string resolution = 5;
+  int32 position = 6;
+}
+
+message MediaChunkResolutionRequest {
+  string resolution = 1;
+  int32  mediaId = 2;
+}
+
+message LinkMediaWithChunkRequest {
+  int32 mediaId = 1;
+  int32 position = 2;
+  string resolution = 3;
+  int32 chunkId = 4;
+}
+
+message GetMediaChunkInfoRequest {
+  int32 chunkId = 1;
+}

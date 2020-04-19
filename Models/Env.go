@@ -18,6 +18,8 @@ type Env struct {
 	MediaMetadataGrpcPort string
 	ChunkMetadataGrpcServer string
 	ChunkMetadataGrpcPort string
+	TimeShiftGrpcServer string
+	TimeShiftGrpcPort string
 }
 
 func InitEnv()  {
@@ -32,6 +34,8 @@ func InitEnv()  {
 		MediaMetadataGrpcPort:   	os.Getenv("MEDIA_METADATA_GRPC_PORT"),
 		ChunkMetadataGrpcServer:  	os.Getenv("CHUNK_METADATA_GRPC_SERVER"),
 		ChunkMetadataGrpcPort:		os.Getenv("CHUNK_METADATA_GRPC_PORT"),
+		TimeShiftGrpcServer:		os.Getenv("TIMESHIFT_GRPC_SERVER"),
+		TimeShiftGrpcPort:			os.Getenv("TIMESHIFT_GRPC_PORT"),
 	}
 	fmt.Println(envStruct)
 }
