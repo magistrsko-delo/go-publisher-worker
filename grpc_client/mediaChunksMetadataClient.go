@@ -15,13 +15,13 @@ type MediaChunksClient struct {
 	client pbMediaChunks.MediaMetadataClient
 }
 
-func (mediaChunksClient *MediaChunksClient) LinkMediaChunks() (*pbMediaChunks.LinkMediaChunkResponse, error)  {
+func (mediaChunksClient *MediaChunksClient) LinkMediaChunks(mediaId int32, position int32, resolution string, chunkId int32) (*pbMediaChunks.LinkMediaChunkResponse, error)  {
 
 	response, err := mediaChunksClient.client.LinkMediaWithChunk(context.Background(), &pbMediaChunks.LinkMediaWithChunkRequest{
-		MediaId:              0,
-		Position:             0,
-		Resolution:           "",
-		ChunkId:              0,
+		MediaId:              mediaId,
+		Position:             position,
+		Resolution:           resolution,
+		ChunkId:              chunkId,
 	})
 
 	if err != nil {

@@ -42,8 +42,36 @@ func (worker *Worker) Work()  {
 
 			newMediaRsp, err :=  worker.mediaMetadataGrpcClient.CreateMediaMetadata(newMedia)
 
+			if err != nil{
+				log.Println(err)
+			}
+
 			log.Println("new media rsp: ", newMediaRsp)
 
+			sequenceTimeShiftData, err := worker.timeShiftGrpcClient.GetSequenceChunkInfo(publishInput.SequenceId)
+			if err != nil{
+				log.Println(err)
+			}
+
+			sequenceChunksResolution := sequenceTimeShiftData.GetData()
+			for i := 0; i < len(sequenceChunksResolution); i++ {
+				resolution := sequenceChunksResolution[i].GetResolution()
+
+				chunks := sequenceChunksResolution[i].GetChunks()
+				for j := 0; j < len(chunks); j++ {
+					_, err := worker.mediaChunksGrpcClient.LinkMediaChunks(newMediaRsp.GetMediaId(), int32(j), resolution, chunks[j].GetChunkId())
+					if err != nil {
+						log.Println(err)
+					}
+				}
+			}
+
+			newMediaRsp.Status = 3
+			// TODO for next version download new sequence chunks.. join then and create new media for download on aws...
+			_, err = worker.mediaMetadataGrpcClient.UpdateMediaMetadata(newMediaRsp)
+			if err != nil {
+				log.Println(err)
+			}
 
 			log.Printf("Done")
 			_ = d.Ack(false)

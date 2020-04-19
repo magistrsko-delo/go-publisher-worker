@@ -15,18 +15,18 @@ type MediaMetadataClient struct {
 	client pbMediaMetadata.MediaMetadataClient
 }
 
-func (mediaMetadataClient *MediaMetadataClient) UpdateMediaMetadata() (*pbMediaMetadata.MediaMetadataResponse, error)  {
+func (mediaMetadataClient *MediaMetadataClient) UpdateMediaMetadata(mediaMetadata *pbMediaMetadata.MediaMetadataResponse) (*pbMediaMetadata.MediaMetadataResponse, error)  {
 	response, err := mediaMetadataClient.client.UpdateMediaMetadata(context.Background(), &pbMediaMetadata.UpdateMediaRequest{
-		MediaId:                  0,
-		Name:                     "",
-		SiteName:                 "",
-		Length:                   0,
-		Status:                   0,
-		Thumbnail:                "",
-		ProjectId:                0,
-		AwsBucketWholeMedia:      "",
-		AwsStorageNameWholeMedia: "",
-		CreatedAt:                0,
+		MediaId:                  mediaMetadata.GetMediaId(),
+		Name:                     mediaMetadata.GetName(),
+		SiteName:                 mediaMetadata.GetSiteName(),
+		Length:                   mediaMetadata.GetLength(),
+		Status:                   mediaMetadata.GetStatus(),
+		Thumbnail:                mediaMetadata.GetThumbnail(),
+		ProjectId:                mediaMetadata.GetProjectId(),
+		AwsBucketWholeMedia:      mediaMetadata.GetAwsBucketWholeMedia(),
+		AwsStorageNameWholeMedia: mediaMetadata.GetAwsStorageNameWholeMedia(),
+		CreatedAt:                mediaMetadata.GetCreatedAt(),
 	})
 
 	if err != nil {
