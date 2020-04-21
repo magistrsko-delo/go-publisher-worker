@@ -76,11 +76,14 @@ func (worker *Worker) Work()  {
 						continue
 					}
 
-					err = worker.mediaDownloaderClient.DownloadFile("./assets/chunks/" + strconv.Itoa(j) + "_" + chunks[j].GetAwsStorageName(), chunks[j].GetChunksUrl())
-					if err != nil {
-						log.Println(err)
-						continue
+					if resolution == "1920x1080" {
+						err = worker.mediaDownloaderClient.DownloadFile("./assets/chunks/" + strconv.Itoa(j) + "_" + chunks[j].GetAwsStorageName(), chunks[j].GetChunksUrl())
+						if err != nil {
+							log.Println(err)
+							continue
+						}
 					}
+
 				}
 			}
 
