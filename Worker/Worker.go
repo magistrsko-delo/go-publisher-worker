@@ -40,6 +40,14 @@ func (worker *Worker) Work()  {
 				log.Println(err)
 			}
 
+			sequenceData, err := worker.sequenceGrpcClient.GetSequenceMedia(publishInput.SequenceId)
+
+			if err != nil {
+				log.Println(err)
+			}
+
+			_, err = worker.sequenceGrpcClient.UpdateSequence(sequenceData)
+
 			newMedia := &Models.NewMediaModel{
 				MediaId:                  0,
 				Name:                     publishInput.Name,
@@ -133,13 +141,6 @@ func (worker *Worker) Work()  {
 			if err != nil {
 				log.Println(err)
 			}
-
-			sequenceData, err := worker.sequenceGrpcClient.GetSequenceMedia(sequenceTimeShiftData.GetSequenceId())
-
-			if err != nil {
-				log.Println(err)
-			}
-			_, err = worker.sequenceGrpcClient.UpdateSequence(sequenceData)
 
 			if err != nil {
 				log.Println(err)
