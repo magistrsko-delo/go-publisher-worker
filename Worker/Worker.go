@@ -8,6 +8,7 @@ import (
 	"go-publisher-worker/execCommand"
 	"go-publisher-worker/grpc_client"
 	"log"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -111,6 +112,13 @@ func (worker *Worker) Work()  {
 			if err != nil {
 				log.Println(err)
 			}
+
+			thumbnailMedia, err := worker.getMediaScreenShot(newMediaName, newMediaRsp.GetMediaId())
+
+			if err != nil {
+				log.Println(err)
+			}
+
 			removePaths := newMediaChunksPaths
 			removePaths = append(removePaths, "./assets/concatFileList.txt")
 			removePaths = append(removePaths, "assets/" + newMediaName + ".ts")
@@ -120,6 +128,7 @@ func (worker *Worker) Work()  {
 			newMediaRsp.Status = 3
 			newMediaRsp.AwsBucketWholeMedia = awsBucketRsp.GetBucketname()
 			newMediaRsp.AwsStorageNameWholeMedia = newMediaName + ".mp4"
+			newMediaRsp.Thumbnail = thumbnailMedia
 			_, err = worker.mediaMetadataGrpcClient.UpdateMediaMetadata(newMediaRsp)
 			if err != nil {
 				log.Println(err)
@@ -144,6 +153,24 @@ func (worker *Worker) Work()  {
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	<-forever
+}
+
+func (worker *Worker) getMediaScreenShot(newMediaName string, newMediaId int32) (string, error) {
+	log.Println("CREATING MEDIA SCREENSHOT")
+	imageName := strconv.Itoa(int(newMediaId)) + "-" + strconv.Itoa(rand.Intn(1000000000000)) + "-" + newMediaName + ".jpg"
+	err := worker.execCommand.ExecFFmpegCommand([]string{"-ss", "00:00:01", "-i", "./assets/" + newMediaName + ".mp4", "-vframes", "1", "-g:v", "2", "./assets/" + imageName})
+	if err != nil {
+		log.Println(err)
+		return "" , err
+	}
+	_, err = worker.awsStorageGrpcClient.UploadMedia( "./assets/" + imageName, "mag20-images", imageName)  // TODO for later add this to configuration maybe..
+	if err != nil {
+		log.Println(err)
+		return "" , err
+	}
+
+	worker.removeFile("./assets/" + imageName)
+	return "v1/mediaManager/mag20-images/" + imageName, nil
 }
 
 
