@@ -127,11 +127,6 @@ func (worker *Worker) Work()  {
 				log.Println(err)
 			}
 
-			removePaths := newMediaChunksPaths
-			removePaths = append(removePaths, "./assets/concatFileList.txt")
-			removePaths = append(removePaths, "assets/" + newMediaName + ".ts")
-			removePaths = append(removePaths, "assets/" + newMediaName + ".mp4")
-			worker.removeGeneratedFiles(removePaths)
 			////////////////////////////////////////
 			newMediaRsp.Status = 3
 			newMediaRsp.AwsBucketWholeMedia = awsBucketRsp.GetBucketname()
@@ -142,9 +137,11 @@ func (worker *Worker) Work()  {
 				log.Println(err)
 			}
 
-			if err != nil {
-				log.Println(err)
-			}
+			removePaths := newMediaChunksPaths
+			removePaths = append(removePaths, "./assets/concatFileList.txt")
+			removePaths = append(removePaths, "assets/" + newMediaName + ".ts")
+			removePaths = append(removePaths, "assets/" + newMediaName + ".mp4")
+			worker.removeGeneratedFiles(removePaths)
 
 			log.Printf("Done")
 			_ = d.Ack(false)
