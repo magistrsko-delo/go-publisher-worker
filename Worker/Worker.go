@@ -25,6 +25,7 @@ type Worker struct {
 	awsStorageGrpcClient *grpc_client.AwsStorageClient
 	mediaDownloaderClient *Http.MediaDownloader
 	execCommand *execCommand.ExecCommand
+	rabbitMQMessagePublisher *RabbitMQPublisher
 }
 
 func (worker *Worker) Work()  {
@@ -121,6 +122,15 @@ func (worker *Worker) Work()  {
 				log.Println(err)
 			}
 
+			videoAnalysisQueueData, err := json.Marshal(Models.VideoAnalysisMessage{MediaId: int(newMediaRsp.MediaId)})
+			if err != nil {
+				log.Println(err)
+			}
+			err = worker.rabbitMQMessagePublisher.publishMessageOnQueue(videoAnalysisQueueData)
+			if err != nil {
+				log.Println(err)
+			}
+
 			thumbnailMedia, err := worker.getMediaScreenShot(newMediaName, newMediaRsp.GetMediaId())
 
 			if err != nil {
@@ -208,6 +218,7 @@ func (worker *Worker) removeFile(path string)  {
 func InitWorker() *Worker  {
 	return &Worker{
 		RabbitMQ: 					initRabbitMqConnection(Models.GetEnvStruct()),
+		rabbitMQMessagePublisher:   InitRabbitMQVideoAnalysisPublisher(),
 		env:      					Models.GetEnvStruct(),
 		mediaMetadataGrpcClient: 	grpc_client.InitMediaMetadataGrpcClient(),
 		mediaChunksGrpcClient: 		grpc_client.InitChunkMetadataClient(),

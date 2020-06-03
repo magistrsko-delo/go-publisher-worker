@@ -23,7 +23,7 @@ func initRabbitMqConnection(env *Models.Env) *RabbitMqConnection  {
 	failOnError(err, "Failed to open a channel")
 
 	q, err := ch.QueueDeclare(
-		env.RabbitQueue,
+		env.RabbitQueueWorker,
 		true,
 		false,
 		false,

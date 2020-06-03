@@ -10,7 +10,8 @@ var envStruct *Env
 type Env struct {
 	RabbitUser string
 	RabbitPassword string
-	RabbitQueue string
+	RabbitQueueWorker string
+	RabbitMqVideoAnalysis string
 	RabbitHost string
 	RabbitPort string
 	Env string
@@ -30,7 +31,8 @@ func InitEnv()  {
 	envStruct = &Env{
 		RabbitUser:       			os.Getenv("RABBIT_USER"),
 		RabbitPassword:   			os.Getenv("RABBIT_PASSWORD"),
-		RabbitQueue:      			os.Getenv("RABBIT_QUEUE"),
+		RabbitQueueWorker:      	os.Getenv("RABBIT_QUEUE_WORKER"),
+		RabbitMqVideoAnalysis:      os.Getenv("RABBIT_QUEUE_VIDEO_ANALYSIS"),
 		RabbitHost:       			os.Getenv("RABBIT_HOST"),
 		RabbitPort: 				os.Getenv("RABBIT_PORT"),
 		Env: 			  			os.Getenv("ENV"),
