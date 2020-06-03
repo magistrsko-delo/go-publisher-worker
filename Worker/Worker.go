@@ -122,15 +122,6 @@ func (worker *Worker) Work()  {
 				log.Println(err)
 			}
 
-			videoAnalysisQueueData, err := json.Marshal(Models.VideoAnalysisMessage{MediaId: int(newMediaRsp.MediaId)})
-			if err != nil {
-				log.Println(err)
-			}
-			err = worker.rabbitMQMessagePublisher.publishMessageOnQueue(videoAnalysisQueueData)
-			if err != nil {
-				log.Println(err)
-			}
-
 			thumbnailMedia, err := worker.getMediaScreenShot(newMediaName, newMediaRsp.GetMediaId())
 
 			if err != nil {
@@ -143,6 +134,15 @@ func (worker *Worker) Work()  {
 			newMediaRsp.AwsStorageNameWholeMedia = newMediaName + ".mp4"
 			newMediaRsp.Thumbnail = thumbnailMedia
 			_, err = worker.mediaMetadataGrpcClient.UpdateMediaMetadata(newMediaRsp)
+			if err != nil {
+				log.Println(err)
+			}
+
+			videoAnalysisQueueData, err := json.Marshal(Models.VideoAnalysisMessage{MediaId: int(newMediaRsp.MediaId)})
+			if err != nil {
+				log.Println(err)
+			}
+			err = worker.rabbitMQMessagePublisher.publishMessageOnQueue(videoAnalysisQueueData)
 			if err != nil {
 				log.Println(err)
 			}
